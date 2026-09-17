@@ -1,0 +1,29 @@
+name: Validate Game Code
+
+on:
+  push:
+    paths:
+      - 'client/**'
+      - 'android/app/src/main/assets/client/**'
+      - '.github/workflows/validate.yml'
+  pull_request:
+    paths:
+      - 'client/**'
+      - 'android/app/src/main/assets/client/**'
+      - '.github/workflows/validate.yml'
+  workflow_dispatch:
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check browser game syntax
+        run: node --check client/game.js
+      - name: Check Android game syntax
+        run: node --check android/app/src/main/assets/client/game.js
