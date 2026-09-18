@@ -31,7 +31,10 @@ for(let i=0;i<Math.min(14,vehicles.length);i++){const v=vehicles[i];v.userData.t
 function updateTraffic(dt){
   for(const v of vehicles){
     if(!v.userData.traffic||v===driving)continue;
-    const axis=v.userData.trafficAxis,dir=v.userData.trafficDir,s=v.userData.trafficSpeed;
+    const axis=v.userData.trafficAxis,dir=v.userData.trafficDir; let s=v.userData.trafficSpeed;
+    const front=new THREE.Vector3(0,0,-1).applyAxisAngle(UP,v.rotation.y);
+    for(const o of vehicles){if(o!==v&&o.userData.traffic&&v.position.distanceTo(o.position)<7){const to=o.position.clone().sub(v.position);if(to.dot(front)>0)s=0}}
+    const playerGap=v.position.distanceTo(player.position);if(playerGap<8&&playerGap>2){const to=player.position.clone().sub(v.position);if(to.dot(front)>0)s=0}
     if(axis==='x')v.position.x+=dir*s*dt;else v.position.z+=dir*s*dt;
     if(axis==='x'&&(v.position.x>640||v.position.x<-640))v.position.x=-dir*640;
     if(axis==='z'&&(v.position.z>640||v.position.z<-640))v.position.z=-dir*640;
